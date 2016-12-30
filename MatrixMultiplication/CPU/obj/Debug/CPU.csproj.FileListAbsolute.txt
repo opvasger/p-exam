@@ -25,5 +25,6 @@ C:\Users\w0ns88\Desktop\pba\pa\p-exam\MatrixMultiplication\CPU\bin\Debug\NPP.pdb
 C:\Users\w0ns88\Desktop\pba\pa\p-exam\MatrixMultiplication\CPU\bin\Debug\NPP.xml
 C:\Users\w0ns88\Desktop\pba\pa\p-exam\MatrixMultiplication\CPU\bin\Debug\NVRTC.pdb
 C:\Users\w0ns88\Desktop\pba\pa\p-exam\MatrixMultiplication\CPU\bin\Debug\NVRTC.xml
+C:\Users\w0ns88\Desktop\pba\pa\p-exam\MatrixMultiplication\CPU\obj\Debug\CPU.csprojResolveAssemblyReference.cache
 C:\Users\w0ns88\Desktop\pba\pa\p-exam\MatrixMultiplication\CPU\obj\Debug\CPU.exe
 C:\Users\w0ns88\Desktop\pba\pa\p-exam\MatrixMultiplication\CPU\obj\Debug\CPU.pdb
