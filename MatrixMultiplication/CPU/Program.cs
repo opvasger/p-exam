@@ -11,11 +11,11 @@ namespace CPU
 
         private const int N = 1000;
 
-        static void Main(string[] args)
+        static void Main()
         {
             Console.WriteLine("Initializing matrices A and B...\r\n");
-            double[][] A = initializeMatrix(N, N, MatrixType.A);
-            double[][] B = initializeMatrix(N, N, MatrixType.B);
+            double[][] A = InitializeMatrix(N, N, MatrixType.A);
+            double[][] B = InitializeMatrix(N, N, MatrixType.B);
 
             Console.WriteLine("Choose operation:\r\n1: Naive\r\n2: Cache Friendly\r\n3: Parallel Naive\r\n4: Parallel Cache Friendly\r\n");
             
@@ -30,7 +30,7 @@ namespace CPU
                     try
                     {
                         Console.WriteLine("Calculating Matrix Multiplication on C = A * B:");
-                        opperation(A, B, userOption(option.Key));
+                        Operation(A, B, UserOption(option.Key));
                         break;
                     }
                     catch (Exception e)
@@ -46,7 +46,7 @@ namespace CPU
             }
         }
 
-        private static Opperations userOption(ConsoleKey input)
+        private static Opperations UserOption(ConsoleKey input)
         {
             switch (input)
             {
@@ -63,29 +63,29 @@ namespace CPU
             }
         }
 
-        private static void opperation(double[][] A, double[][] B, Opperations option)
+        private static void Operation(double[][] A, double[][] B, Opperations option)
         {
             switch (option)
             {
                 case Opperations.Naive:
-                    naiveMatrixMultiplication(A, B);
+                    NaiveMatrixMultiplication(A, B);
                     break;
                 case Opperations.CacheFriendly:
-                    cacheFriendlyMatrixMultiplication(A, B);
+                    CacheFriendlyMatrixMultiplication(A, B);
                     break;
                 case Opperations.ParallelNaive:
-                    parallelNaiveMatrixMultiplication(A, B);
+                    ParallelNaiveMatrixMultiplication(A, B);
                     break;
                 case Opperations.ParallelCacheFriendly:
-                    parallelCacheFriendlyMatrixMultiplication(A, B);
+                    ParallelCacheFriendlyMatrixMultiplication(A, B);
                     break;
                 default:
-                    naiveMatrixMultiplication(A, B);
+                    NaiveMatrixMultiplication(A, B);
                     break;
             }
         }
 
-        private static double[][] initializeMatrix(int rows, int cols, MatrixType type)
+        private static double[][] InitializeMatrix(int rows, int cols, MatrixType type)
         {
             double[][] tmp = new double[rows][];
             for (int i = 0; i < N; i++)
@@ -97,7 +97,7 @@ namespace CPU
             return tmp;
         }
 
-        private static void naiveMatrixMultiplication(double[][] A, double[][] B)
+        private static void NaiveMatrixMultiplication(double[][] A, double[][] B)
         {
             Console.Write("Naive Matrix Multiplication:");
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -132,7 +132,7 @@ namespace CPU
             Console.WriteLine(" Elapsed Time = {0:f3} seconds.", time / 1000d);
         }
 
-        private static void cacheFriendlyMatrixMultiplication(double[][] A, double[][] B)
+        private static void CacheFriendlyMatrixMultiplication(double[][] A, double[][] B)
         {
             Console.Write("Chache Friendly Matrix Multiplication:");
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -167,7 +167,7 @@ namespace CPU
             Console.WriteLine(" Elapsed Time = {0:f3} seconds.", time / 1000d);
         }
 
-        private static void parallelNaiveMatrixMultiplication(double[][] A, double[][] B)
+        private static void ParallelNaiveMatrixMultiplication(double[][] A, double[][] B)
         {
             Console.Write("Parallel Naive Matrix Multiplication:");
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -200,7 +200,7 @@ namespace CPU
             Console.WriteLine(" Elapsed Time = {0:f3} seconds.", time / 1000d);
         }
 
-        private static void parallelCacheFriendlyMatrixMultiplication(double[][] A, double[][] B)
+        private static void ParallelCacheFriendlyMatrixMultiplication(double[][] A, double[][] B)
         {
             Console.Write("Parallel Cache Friendly Matrix Multiplication:");
             Stopwatch stopwatch = Stopwatch.StartNew();
