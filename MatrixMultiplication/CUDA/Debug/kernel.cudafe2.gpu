@@ -1,0 +1,24 @@
+#line 198 "C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\include\\vcruntime.h"
+typedef unsigned size_t;
+#include "crt/device_runtime.h"
+#line 4 "C:/Users/w0ns88/Desktop/pba/pa/p-exam/MatrixMultiplication/CUDA/kernel.cu"
+__global__ __var_used__ extern void _Z6kerneliiPi(int, int, int *);
+#include "common_functions.h"
+#line 4 "C:/Users/w0ns88/Desktop/pba/pa/p-exam/MatrixMultiplication/CUDA/kernel.cu"
+__global__ __var_used__ void _Z6kerneliiPi(
+#line 4 "C:/Users/w0ns88/Desktop/pba/pa/p-exam/MatrixMultiplication/CUDA/kernel.cu"
+int a, 
+#line 4 "C:/Users/w0ns88/Desktop/pba/pa/p-exam/MatrixMultiplication/CUDA/kernel.cu"
+int b, 
+#line 4 "C:/Users/w0ns88/Desktop/pba/pa/p-exam/MatrixMultiplication/CUDA/kernel.cu"
+int *c){
+#line 4 "C:/Users/w0ns88/Desktop/pba/pa/p-exam/MatrixMultiplication/CUDA/kernel.cu"
+{
+#line 5 "C:/Users/w0ns88/Desktop/pba/pa/p-exam/MatrixMultiplication/CUDA/kernel.cu"
+{
+#line 6 "C:/Users/w0ns88/Desktop/pba/pa/p-exam/MatrixMultiplication/CUDA/kernel.cu"
+(*c) = ((a + b) * (a + b));
+#line 7 "C:/Users/w0ns88/Desktop/pba/pa/p-exam/MatrixMultiplication/CUDA/kernel.cu"
+} 
+#line 7 "C:/Users/w0ns88/Desktop/pba/pa/p-exam/MatrixMultiplication/CUDA/kernel.cu"
+}}
