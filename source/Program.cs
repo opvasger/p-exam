@@ -4,7 +4,7 @@ using System.Net.Http;
 /*
     Simple example of a HTTP get and body parsing to string.
     - build the program with dotnet restore.
-    - run the program with dotnet run.
+    - run the program with dotnet watch run.
 */
 
 public class Program
