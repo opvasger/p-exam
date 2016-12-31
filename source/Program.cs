@@ -1,6 +1,12 @@
 ﻿using System;
 using System.Net.Http;
 
+/*
+    Simple example of a HTTP get and body parsing to string.
+    - build the program with dotnet restore.
+    - run the program with dotnet run.
+*/
+
 public class Program
 {
     public static void Main (string[] args)
