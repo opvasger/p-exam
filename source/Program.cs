@@ -25,7 +25,7 @@ public class Program
             var setSerializer = new DataContractJsonSerializer(typeof(List<Model.Set>));
             var bodyStream = new MemoryStream(Encoding.UTF8.GetBytes(body));
             var sets = (List<Model.Set>) setSerializer.ReadObject(bodyStream);
-            Console.WriteLine(sets[0].name);
+            // do something with the sets
         })
         .Wait();
     }
