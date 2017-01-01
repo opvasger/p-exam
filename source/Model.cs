@@ -7,16 +7,16 @@ public class Model
     public class Set
     {
         [DataMember]
-        public List<Card> Cards { get; set; }
+        public List<Card> cards { get; set; }
 
         [DataMember]
-        public string Name { get; set; }
+        public string name { get; set; }
     }
 
     [DataContract]
     public class Card
     {
         [DataMember]
-        public string Name { get; set; }
+        public string name { get; set; }
     }
 }

@@ -22,11 +22,10 @@ public class Program
         {
             var result = await response;
             var body = await result.Content.ReadAsStringAsync();
-            var setSerializer = new DataContractJsonSerializer(typeof(Model.Set[]));
-            MemoryStream stream = new MemoryStream(Encoding.ASCII.GetBytes(body));
-            var sets = new List<Model.Set>();
-            setSerializer.WriteObject(stream, sets);
-            Console.WriteLine(sets[0].Cards[0].ToString());
+            var setSerializer = new DataContractJsonSerializer(typeof(List<Model.Set>));
+            var bodyStream = new MemoryStream(Encoding.UTF8.GetBytes(body));
+            var sets = (List<Model.Set>) setSerializer.ReadObject(bodyStream);
+            Console.WriteLine(sets[0].name);
         })
         .Wait();
     }
