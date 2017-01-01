@@ -6,17 +6,17 @@ public class Model
     [DataContract]
     public class Set
     {
-        [DataMember]
+        [DataMember(Name = "cards")]
         public List<Card> Cards { get; set; }
 
-        [DataMember]
+        [DataMember(Name = "name")]
         public string Name { get; set; }
     }
 
     [DataContract]
     public class Card
     {
-        [DataMember]
+        [DataMember(Name = "name")]
         public string Name { get; set; }
     }
 }
