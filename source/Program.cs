@@ -26,7 +26,14 @@ public class Program
             var setSerializer = new DataContractJsonSerializer(typeof(List<Model.Set>));
             var bodyStream = new MemoryStream(Encoding.UTF8.GetBytes(body));
             var sets = (List<Model.Set>) setSerializer.ReadObject(bodyStream);
-            // do something with the sets
+
+            // Log the name of the set with most legendary cards
+
+            // Log the count of all red cards
+
+            // Log the name of the most reprinted card
+
+            // Log the most popular combination of colors
         })
         .Wait();
     }

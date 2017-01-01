@@ -21,6 +21,9 @@ public class Model
         public string Name { get; set; }
 
         [DataMember(Name = "colorIdentity")]
-        public string Color { get; set; }
+        public List<string> Colors { get; set; }
+
+        [DataMember(Name = "supertypes")]
+        public List<string> SuperTypes { get; set; }
     }
 }
