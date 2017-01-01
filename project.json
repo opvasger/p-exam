@@ -5,8 +5,8 @@
     "emitEntryPoint": true
   },
   "dependencies": {
-    "System.Runtime.Serialization.Json": "4.0.1",
-    "System.Runtime.Serialization.Primitives": "4.1.1"
+    "System.Runtime.Serialization.Json": "4.3.0",
+    "System.Runtime.Serialization.Primitives": "4.3.0"
   },
   "frameworks": {
     "netcoreapp1.1": {

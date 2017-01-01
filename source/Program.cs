@@ -22,7 +22,7 @@ public class Program
         {
             var result = await response;
             var body = await result.Content.ReadAsStringAsync();
-            var setSerializer = new DataContractJsonSerializer(typeof(Model.Set));
+            var setSerializer = new DataContractJsonSerializer(typeof(Model.Set[]));
             MemoryStream stream = new MemoryStream(Encoding.ASCII.GetBytes(body));
             var sets = new List<Model.Set>();
             setSerializer.WriteObject(stream, sets);
