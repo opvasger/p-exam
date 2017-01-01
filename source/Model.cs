@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 
 public class Model
 {
+
     [DataContract]
     public class Set
     {
@@ -16,7 +17,12 @@ public class Model
     [DataContract]
     public class Card
     {
+        public enum Color { Black, Blue, Colorless, Green, Red, White };
+
         [DataMember(Name = "name")]
         public string Name { get; set; }
+
+        [DataMember(Name = "colorIdentity")]
+        public Color color { get; set; }
     }
 }

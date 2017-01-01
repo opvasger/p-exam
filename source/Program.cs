@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Http;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Linq;
 
 /*
     Simple example of a HTTP get and body parsing to string.
