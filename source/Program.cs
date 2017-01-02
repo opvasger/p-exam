@@ -28,6 +28,18 @@ public class Program
             var sets = (List<Model.Set>)setSerializer.ReadObject(bodyStream);
 
             // Log the name of the set with most legendary cards
+            var legendary = sets.Select(s => new
+            {
+                SetName = s.Name,
+                LegendCount = s.Cards
+                    .Where(c => c.SuperTypes != null &&
+                    c.SuperTypes.Contains("Legendary"))
+                        .ToList()
+                        .Count
+            })
+                .OrderByDescending(c => c.LegendCount)
+                .First();
+            Console.WriteLine(legendary.SetName + " is the set with most Legendary Cards totalling " + legendary.LegendCount);
 
             // Log the count of all red cards
             Console.WriteLine(
@@ -40,6 +52,27 @@ public class Program
             );
 
             // Log the name of the most reprinted card
+            var mostReprinted = sets
+            .SelectMany(set => set.Cards)
+            .Aggregate(
+                new Dictionary<string, int>(),
+                (cardMap, card) => {
+                    if (cardMap.ContainsKey(card.Name))
+                         cardMap[card.Name] = cardMap[card.Name] + 1;
+                    else
+                        cardMap.Add(card.Name, 0);
+                    return cardMap;
+                }
+            )
+            .OrderBy(card => card.Value)
+            .LastOrDefault();
+
+            Console.WriteLine(
+                "{0} is the most reprinted Magic card with {1} reprints",
+                mostReprinted.Key,
+                mostReprinted.Value
+            );
+
 
             // Log the most popular combination of colors
 
