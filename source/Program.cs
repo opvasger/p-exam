@@ -22,23 +22,41 @@ public class Program
             var bodyStream = new MemoryStream(Encoding.UTF8.GetBytes(body));
             var sets = (List<Model.Set>)setSerializer.ReadObject(bodyStream);
             
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-            PrintLegendarySet(sets);
-            PrintRedCards(sets);
-            PrintMostReprinted(sets);
-            PrintMostPopularColorCombination(sets);
-            sw.Stop();
-            TimeSpan ts = sw.Elapsed;
+            Stopwatch watch = new Stopwatch();
 
-            Console.WriteLine();
-            Console.WriteLine("Elapsed Time: " + ts);
-            Console.WriteLine();
+            watch.Start();
+
+            PrintColor(sets);
+            PrintReprinted(sets);
+            PrintLegendary(sets);
+            PrintRed(sets);
+
+            watch.Stop();
+            var syncElapsed = watch.Elapsed.TotalMilliseconds;
+            watch.Reset();
+
+            Console.WriteLine("\nElapsed Time running synchronously was {0} miliseconds\n", syncElapsed);
+            
+
+            watch.Start();
+
+            PrintColorParallel(sets);
+            //PrintReprintParallel(sets);
+            //PrintLegendaryParallel(sets);
+            //PrintRedParallel(sets);
+
+            watch.Stop();
+            var parallelElapsed = watch.Elapsed.TotalMilliseconds;
+            watch.Reset();
+
+            Console.WriteLine("\nElapsed Time in parallel was {0} miliseconds\n", parallelElapsed);
+            
+
         })
         .Wait();
     }
 
-    public static void PrintMostPopularColorCombination(List<Model.Set> sets)
+    public static void PrintColor(List<Model.Set> sets)
     {
         var mostPopularColorCombination =
             sets
@@ -67,7 +85,36 @@ public class Program
         );
     }
 
-    public static void PrintMostReprinted(List<Model.Set> sets)
+    public static void PrintColorParallel(List<Model.Set> sets)
+    {
+        var mostPopularColorCombination =
+            sets.AsParallel()
+                .SelectMany(set => set.Cards)
+                .Where(card => card.Colors != null && card.Colors.Count > 1)
+                .Aggregate(
+                    new Dictionary<string, int>(),
+                    (cardMap, card) =>
+                    {
+                        var key = String.Join(",", card.Colors);
+
+                        if (cardMap.ContainsKey(key))
+                            cardMap[key] += 1;
+                        else
+                            cardMap.Add(key, 1);
+                        return cardMap;
+                    }
+                )
+                .OrderBy(card => card.Value)
+                .LastOrDefault();
+
+        Console.WriteLine(
+            "{0} is the most popular Magic card color combination with {1} cards",
+            mostPopularColorCombination.Key,
+            mostPopularColorCombination.Value
+        );
+    }
+
+    public static void PrintReprinted(List<Model.Set> sets)
     {
         var mostReprinted = sets
             .SelectMany(set => set.Cards)
@@ -92,7 +139,7 @@ public class Program
         );
     }
 
-    public static void PrintLegendarySet(List<Model.Set> sets)
+    public static void PrintLegendary(List<Model.Set> sets)
     {
         var mostLegendarySet = sets.Select(set => new
             {
@@ -115,7 +162,7 @@ public class Program
         );
     }
 
-    public static void PrintRedCards(List<Model.Set> sets)
+    public static void PrintRed(List<Model.Set> sets)
     {
         var redCards = sets
             .SelectMany(set => set.Cards)
