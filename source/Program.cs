@@ -34,6 +34,13 @@ public class Program
             // Log the name of the most reprinted card
 
             // Log the most popular combination of colors
+            var cards = sets
+                        .SelectMany(set => set.Cards)
+                        .Where(card => card.Colors != null);
+
+
+            foreach (Model.Card card in cards)
+                Console.WriteLine(card.Colors[0]);
         })
         .Wait();
     }
