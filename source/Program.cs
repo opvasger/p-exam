@@ -40,6 +40,27 @@ public class Program
             );
 
             // Log the name of the most reprinted card
+            var mostReprinted = sets
+            .SelectMany(set => set.Cards)
+            .Aggregate(
+                new Dictionary<string, int>(),
+                (cardMap, card) => {
+                    if (cardMap.ContainsKey(card.Name))
+                         cardMap[card.Name] = cardMap[card.Name] + 1;
+                    else
+                        cardMap.Add(card.Name, 0);
+                    return cardMap;
+                }
+            )
+            .OrderBy(card => card.Value)
+            .LastOrDefault();
+
+            Console.WriteLine(
+                "{0} is the most reprinted Magic card with {1} reprints",
+                mostReprinted.Key,
+                mostReprinted.Value
+            );
+
 
             // Log the most popular combination of colors
         })
