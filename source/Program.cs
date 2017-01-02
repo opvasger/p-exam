@@ -28,6 +28,18 @@ public class Program
             var sets = (List<Model.Set>) setSerializer.ReadObject(bodyStream);
 
             // Log the name of the set with most legendary cards
+            var legendary = sets.Select(s => new
+            {
+                SetName = s.Name,
+                LegendCount = s.Cards
+                    .Where(c => c.SuperTypes != null &&
+                    c.SuperTypes.Contains("Legendary"))
+                        .ToList()
+                        .Count
+            })
+                .OrderByDescending(c => c.LegendCount)
+                .First();
+            Console.WriteLine(legendary.SetName + " is the set with most Legendary Cards totalling " + legendary.LegendCount);
 
             // Log the count of all red cards
             Console.WriteLine(
@@ -63,6 +75,13 @@ public class Program
 
 
             // Log the most popular combination of colors
+            var cards = sets
+                        .SelectMany(set => set.Cards)
+                        .Where(card => card.Colors != null);
+
+
+            foreach (Model.Card card in cards)
+                Console.WriteLine(card.Colors[0]);
         })
         .Wait();
     }
