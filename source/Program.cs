@@ -75,32 +75,29 @@ public class Program
 
 
             // Log the most popular combination of colors
-
-
-            Dictionary<List<string>, int> counter = new Dictionary<List<string>, int>();
-
-            var cards =
+            var mostPopularColorCombination =
             sets
             .SelectMany(set => set.Cards)
-            .Where(card => card.Colors != null && card.Colors.Count > 1);
+            .Where(card => card.Colors != null && card.Colors.Count > 1)
+            .Aggregate(
+                new Dictionary<string, int>(),
+                (cardMap, card) => {
+                    var key = String.Join(",", card.Colors);
 
-            Console.WriteLine("1");
-
-            var colorCombinations =
-            cards
-            .GroupBy(card => card.Colors)
-            .Select(card => new { Count = card.Count(), Color = card.Key });
-
-            Console.WriteLine("2");
-
-            var max = colorCombinations.Max();
-
-            Console.WriteLine("3");
+                    if (cardMap.ContainsKey(key))
+                        cardMap[key] += 1;
+                    else
+                        cardMap.Add(key, 1);
+                    return cardMap;
+                }
+            )
+            .OrderBy(card => card.Value)
+            .LastOrDefault();
 
             Console.WriteLine(
-                "The most popular combination of colors is {0} with {1} cards containing this color combination.",
-                max.ToString(),
-                10
+                "{0} is the most popular Magic card color combination with {1} cards",
+                mostPopularColorCombination.Key,
+                mostPopularColorCombination.Value
             );
         })
         .Wait();
