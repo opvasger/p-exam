@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Threading.Tasks;
 
 public class Program
 {
@@ -23,29 +24,35 @@ public class Program
             var sets = (List<Model.Set>)setSerializer.ReadObject(bodyStream);
             
             Stopwatch watch = new Stopwatch();
-
             watch.Start();
 
             PrintColor(sets);
             PrintReprint(sets);
             PrintLegendary(sets);
-            //PrintRed(sets);
+            PrintRed(sets);
 
-            Console.WriteLine("\nElapsed Time running synchronously was {0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
-            watch.Reset();
-
-            watch.Start();
+            Console.WriteLine("\nElapsed Time running synchronously was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
+            watch.Restart();
 
             PrintColorParallel(sets);
             PrintReprintParallel(sets);
             PrintLegendaryParallel(sets);
             //PrintRedParallel(sets);
 
-            Console.WriteLine("\nElapsed Time in parallel was {0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
-            watch.Reset();
+            Console.WriteLine("\nElapsed Time with PLINQ was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
+            watch.Restart();
 
-        })
-        .Wait();
+            Task.WaitAll(new Task[] {
+                Task.Run(() => PrintColor(sets)),
+                Task.Run(() => PrintReprint(sets)),
+                Task.Run(() => PrintLegendary(sets)),
+                Task.Run(() => PrintRed(sets))
+            });
+
+            Console.WriteLine("\nElapsed Time in parallel was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
+            watch.Stop();
+
+        }).Wait();
     }
 
     public static void PrintColor(List<Model.Set> sets)
