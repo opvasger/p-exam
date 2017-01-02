@@ -6,12 +6,6 @@ using System.Net.Http;
 using System.Runtime.Serialization.Json;
 using System.Text;
 
-/*
-    Simple example of a HTTP get and body parsing to string.
-    - build the program with dotnet restore.
-    - run the program with dotnet watch run.
-*/
-
 public class Program
 {
     public static void Main(string[] args)
@@ -19,36 +13,43 @@ public class Program
 
         new HttpClient()
         .GetAsync("http://mtgjson.com/json/AllSetsArray-x.json")
-        .ContinueWith(async response =>
+        .ContinueWith(async responseTask =>
         {
-            var result = await response;
-            var body = await result.Content.ReadAsStringAsync();
+            var response = await responseTask;
+            var body = await response.Content.ReadAsStringAsync();
             var setSerializer = new DataContractJsonSerializer(typeof(List<Model.Set>));
             var bodyStream = new MemoryStream(Encoding.UTF8.GetBytes(body));
             var sets = (List<Model.Set>)setSerializer.ReadObject(bodyStream);
 
             // Log the name of the set with most legendary cards
-            var legendary = sets.Select(s => new
-            {
-                SetName = s.Name,
-                LegendCount = s.Cards
-                    .Where(c => c.SuperTypes != null &&
-                    c.SuperTypes.Contains("Legendary"))
-                        .ToList()
-                        .Count
+            var mostLegendarySet = sets.Select(set => new {
+                SetName = set.Name,
+                LegendCount = set.Cards
+                    .Where(card =>
+                        card.SuperTypes != null
+                        &&  card.SuperTypes
+                            .Contains("Legendary"))
+                            .ToList()
+                            .Count
             })
-                .OrderByDescending(c => c.LegendCount)
-                .First();
-            Console.WriteLine(legendary.SetName + " is the set with most Legendary Cards totalling " + legendary.LegendCount);
+            .OrderByDescending(set => set.LegendCount)
+            .FirstOrDefault();
+
+            Console.WriteLine(
+                "{0} is the most legendary set with {1} legendary cards",
+                mostLegendarySet.SetName,
+                mostLegendarySet.LegendCount
+            );
 
             // Log the count of all red cards
+            var redCards = sets
+            .SelectMany(set => set.Cards)
+            .Where(card => card.Colors != null && card.Colors.Contains("R"))
+            .ToList()
+
             Console.WriteLine(
                 "There is {0} red Magic cards",
-                sets
-                .SelectMany(set => set.Cards)
-                .Where(card => card.Colors != null && card.Colors.Contains("R"))
-                .ToList()
-                .Count
+                redCards.Count
             );
 
             // Log the name of the most reprinted card
@@ -64,8 +65,8 @@ public class Program
                     return cardMap;
                 }
             )
-            .OrderBy(card => card.Value)
-            .LastOrDefault();
+            .OrderByDescending(card => card.Value)
+            .FirstOrDefault();
 
             Console.WriteLine(
                 "{0} is the most reprinted Magic card with {1} reprints",
@@ -99,6 +100,7 @@ public class Program
                 mostPopularColorCombination.Key,
                 mostPopularColorCombination.Value
             );
+
         })
         .Wait();
     }
