@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Threading;
 
 public class Program
 {
@@ -21,14 +22,14 @@ public class Program
             var setSerializer = new DataContractJsonSerializer(typeof(List<Model.Set>));
             var bodyStream = new MemoryStream(Encoding.UTF8.GetBytes(body));
             var sets = (List<Model.Set>)setSerializer.ReadObject(bodyStream);
-            
+
             Stopwatch watch = new Stopwatch();
 
             watch.Start();
 
-            PrintColor(sets);
-            PrintReprint(sets);
-            PrintLegendary(sets);
+            //PrintColor(sets);
+            //PrintReprint(sets);
+            //PrintLegendary(sets);
             PrintRed(sets);
 
             watch.Stop();
@@ -36,13 +37,13 @@ public class Program
             watch.Reset();
 
             Console.WriteLine("\nElapsed Time running synchronously was {0} miliseconds\n", syncElapsed);
-            
+
 
             watch.Start();
 
-            PrintColorParallel(sets);
-            PrintReprintParallel(sets);
-            PrintLegendaryParallel(sets);
+            //PrintColorParallel(sets);
+            //PrintReprintParallel(sets);
+            //PrintLegendaryParallel(sets);
             //PrintRedParallel(sets);
 
             watch.Stop();
@@ -50,7 +51,7 @@ public class Program
             watch.Reset();
 
             Console.WriteLine("\nElapsed Time in parallel was {0} miliseconds\n", parallelElapsed);
-            
+
 
         })
         .Wait();
@@ -167,16 +168,16 @@ public class Program
     public static void PrintLegendary(List<Model.Set> sets)
     {
         var mostLegendarySet = sets.Select(set => new
-            {
-                SetName = set.Name,
-                LegendCount = set.Cards
+        {
+            SetName = set.Name,
+            LegendCount = set.Cards
                     .Where(card =>
                         card.SuperTypes != null
                         && card.SuperTypes
                             .Contains("Legendary"))
                     .ToList()
                     .Count
-            })
+        })
             .OrderByDescending(set => set.LegendCount)
             .FirstOrDefault();
 
@@ -213,14 +214,28 @@ public class Program
 
     public static void PrintRed(List<Model.Set> sets)
     {
-        var redCards = sets
-            .SelectMany(set => set.Cards)
-            .Where(card => card.Colors != null && card.Colors.Contains("R"))
-            .ToList();
-
+        var count = 0;
+        for (var i = 0; i < sets.Count; i++)
+        {
+            for (var j = 0; j < sets[i].Cards.Count; j++)
+            {
+                if (sets[i].Cards[j].Colors != null)
+                {
+                    for (var k = 0; k < sets[i].Cards[j].Colors.Count; k++)
+                    {
+                        if (sets[i].Cards[j].Colors[k] == "R")
+                        {
+                            count++;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
         Console.WriteLine(
             "There is {0} red Magic cards",
-            redCards.Count
+            count
         );
     }
 }
