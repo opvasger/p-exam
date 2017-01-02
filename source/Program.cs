@@ -27,31 +27,41 @@ public class Program
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            /*PrintColor(sets);
+            PrintColor(sets);
             PrintReprint(sets);
-            PrintLegendary(sets);*/
+            PrintLegendary(sets);
             PrintRed(sets);
 
             Console.WriteLine("\nElapsed Time running synchronously was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             watch.Restart();
 
-            /*PrintColorParallel(sets);
+            PrintColorParallel(sets);
             PrintReprintParallel(sets);
-            PrintLegendaryParallel(sets);*/
+            PrintLegendaryParallel(sets);
             PrintRedParallel(sets);
 
             Console.WriteLine("\nElapsed Time with PLINQ was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             watch.Restart();
-/*
+
             Task.WaitAll(new Task[] {
-                Task.Run(() => PrintColor(sets)),
-                Task.Run(() => PrintReprint(sets)),
-                Task.Run(() => PrintLegendary(sets)),
-                Task.Run(() => PrintRed(sets))
-            });
+                            Task.Run(() => PrintColor(sets)),
+                            Task.Run(() => PrintReprint(sets)),
+                            Task.Run(() => PrintLegendary(sets)),
+                            Task.Run(() => PrintRed(sets))
+                        });
 
             Console.WriteLine("\nElapsed Time in parallel was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
-            watch.Stop();*/
+            watch.Restart();
+
+            Task.WaitAll(new Task[] {
+                            Task.Run(() => PrintColorParallel(sets)),
+                            Task.Run(() => PrintReprintParallel(sets)),
+                            Task.Run(() => PrintLegendaryParallel(sets)),
+                            Task.Run(() => PrintRedParallel(sets))
+                        });
+
+            Console.WriteLine("\nElapsed Time in parallel with PLINQ was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
+            watch.Stop();
 
         }).Wait();
     }
@@ -214,7 +224,7 @@ public class Program
     public static void PrintRed(List<Model.Set> sets)
     {
         var count = 0;
-        
+
         for (var i = 0; i < sets.Count; i++)
         {
             for (var j = 0; j < sets[i].Cards.Count; j++)
@@ -232,7 +242,7 @@ public class Program
                 }
             }
         }
-        
+
         Console.WriteLine(
             "There is {0} red Magic cards",
             count
@@ -243,10 +253,13 @@ public class Program
     {
         var count = 0;
 
-        Parallel.For(0, sets.Count, i => {
-            for (int j = 0; j < sets[i].Cards.Count; j++) {
+        Parallel.For(0, sets.Count, i =>
+        {
+            for (int j = 0; j < sets[i].Cards.Count; j++)
+            {
                 if (sets[i].Cards[j].Colors != null)
-                    for (var k = 0; k < sets[i].Cards[j].Colors.Count; k++) {
+                    for (var k = 0; k < sets[i].Cards[j].Colors.Count; k++)
+                    {
                         if (sets[i].Cards[j].Colors[k] == "R")
                         {
                             Interlocked.Increment(ref count);
