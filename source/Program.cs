@@ -28,7 +28,7 @@ public class Program
             var sets = (List<Model.Set>) setSerializer.ReadObject(bodyStream);
 
             // Log the name of the set with most legendary cards
-            var cards = sets.Select(s => new
+            var legendary = sets.Select(s => new
             {
                 SetName = s.Name,
                 LegendCount = s.Cards
@@ -39,7 +39,7 @@ public class Program
             })
                 .OrderByDescending(c => c.LegendCount)
                 .First();
-            Console.WriteLine(cards.SetName + " is the set with most Legendary Cards totalling " + cards.LegendCount);
+            Console.WriteLine(legendary.SetName + " is the set with most Legendary Cards totalling " + legendary.LegendCount);
 
             // Log the count of all red cards
             Console.WriteLine(
