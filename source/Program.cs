@@ -40,9 +40,6 @@ public class Program
                 .OrderByDescending(c => c.LegendCount)
                 .First();
             Console.WriteLine(cards.SetName + " is the set with most Legendary Cards totalling " + cards.LegendCount);
-                
-            //    c => c.SuperTypes.Contains("Legendary")).ToList().Count);
-            //Console.WriteLine(test.FirstOrDefault());
 
             // Log the count of all red cards
             Console.WriteLine(
