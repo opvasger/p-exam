@@ -25,7 +25,7 @@ public class Program
             var body = await result.Content.ReadAsStringAsync();
             var setSerializer = new DataContractJsonSerializer(typeof(List<Model.Set>));
             var bodyStream = new MemoryStream(Encoding.UTF8.GetBytes(body));
-            var sets = (List<Model.Set>) setSerializer.ReadObject(bodyStream);
+            var sets = (List<Model.Set>)setSerializer.ReadObject(bodyStream);
 
             // Log the name of the set with most legendary cards
 
@@ -42,13 +42,33 @@ public class Program
             // Log the name of the most reprinted card
 
             // Log the most popular combination of colors
-            var cards = sets
-                        .SelectMany(set => set.Cards)
-                        .Where(card => card.Colors != null);
 
 
-            foreach (Model.Card card in cards)
-                Console.WriteLine(card.Colors[0]);
+            Dictionary<List<string>, int> counter = new Dictionary<List<string>, int>();
+
+            var cards =
+            sets
+            .SelectMany(set => set.Cards)
+            .Where(card => card.Colors != null && card.Colors.Count > 1);
+
+            Console.WriteLine("1");
+
+            var colorCombinations =
+            cards
+            .GroupBy(card => card.Colors)
+            .Select(card => new { Count = card.Count(), Color = card.Key });
+
+            Console.WriteLine("2");
+
+            var max = colorCombinations.Max();
+
+            Console.WriteLine("3");
+
+            Console.WriteLine(
+                "The most popular combination of colors is {0} with {1} cards containing this color combination.",
+                max.ToString(),
+                10
+            );
         })
         .Wait();
     }
