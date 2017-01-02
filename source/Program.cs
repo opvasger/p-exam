@@ -27,22 +27,22 @@ public class Program
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            //PrintColor(sets);
-            //PrintReprint(sets);
-            //PrintLegendary(sets);
+            /*PrintColor(sets);
+            PrintReprint(sets);
+            PrintLegendary(sets);*/
             PrintRed(sets);
 
             Console.WriteLine("\nElapsed Time running synchronously was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             watch.Restart();
 
-            //PrintColorParallel(sets);
-            //PrintReprintParallel(sets);
-            //PrintLegendaryParallel(sets);
-            //PrintRedParallel(sets);
+            /*PrintColorParallel(sets);
+            PrintReprintParallel(sets);
+            PrintLegendaryParallel(sets);*/
+            PrintRedParallel(sets);
 
             Console.WriteLine("\nElapsed Time with PLINQ was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             watch.Restart();
-
+/*
             Task.WaitAll(new Task[] {
                 Task.Run(() => PrintColor(sets)),
                 Task.Run(() => PrintReprint(sets)),
@@ -51,7 +51,7 @@ public class Program
             });
 
             Console.WriteLine("\nElapsed Time in parallel was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
-            watch.Stop();
+            watch.Stop();*/
 
         }).Wait();
     }
@@ -214,6 +214,7 @@ public class Program
     public static void PrintRed(List<Model.Set> sets)
     {
         var count = 0;
+        
         for (var i = 0; i < sets.Count; i++)
         {
             for (var j = 0; j < sets[i].Cards.Count; j++)
@@ -232,6 +233,29 @@ public class Program
             }
         }
         
+        Console.WriteLine(
+            "There is {0} red Magic cards",
+            count
+        );
+    }
+
+    public static void PrintRedParallel(List<Model.Set> sets)
+    {
+        var count = 0;
+
+        Parallel.For(0, sets.Count, i =>
+            Parallel.For(0, sets[i].Cards.Count, j => {
+                if (sets[i].Cards[j].Colors != null)
+                    for (var k = 0; k < sets[i].Cards[j].Colors.Count; k++) {
+                        if (sets[i].Cards[j].Colors[k] == "R")
+                        {
+                            Interlocked.Increment(ref count);
+                            break;
+                        }
+                    }
+            })
+        );
+
         Console.WriteLine(
             "There is {0} red Magic cards",
             count
