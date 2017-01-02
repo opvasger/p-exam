@@ -29,14 +29,10 @@ public class Program
             PrintColor(sets);
             PrintReprint(sets);
             PrintLegendary(sets);
-            PrintRed(sets);
+            //PrintRed(sets);
 
-            watch.Stop();
-            var syncElapsed = watch.Elapsed.TotalMilliseconds;
+            Console.WriteLine("\nElapsed Time running synchronously was {0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             watch.Reset();
-
-            Console.WriteLine("\nElapsed Time running synchronously was {0} miliseconds\n", syncElapsed);
-            
 
             watch.Start();
 
@@ -45,12 +41,8 @@ public class Program
             PrintLegendaryParallel(sets);
             //PrintRedParallel(sets);
 
-            watch.Stop();
-            var parallelElapsed = watch.Elapsed.TotalMilliseconds;
+            Console.WriteLine("\nElapsed Time in parallel was {0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             watch.Reset();
-
-            Console.WriteLine("\nElapsed Time in parallel was {0} miliseconds\n", parallelElapsed);
-            
 
         })
         .Wait();
