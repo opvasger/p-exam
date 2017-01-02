@@ -243,8 +243,8 @@ public class Program
     {
         var count = 0;
 
-        Parallel.For(0, sets.Count, i =>
-            Parallel.For(0, sets[i].Cards.Count, j => {
+        Parallel.For(0, sets.Count, i => {
+            for (int j = 0; j < sets[i].Cards.Count; j++) {
                 if (sets[i].Cards[j].Colors != null)
                     for (var k = 0; k < sets[i].Cards[j].Colors.Count; k++) {
                         if (sets[i].Cards[j].Colors[k] == "R")
@@ -253,8 +253,8 @@ public class Program
                             break;
                         }
                     }
-            })
-        );
+            }
+        });
 
         Console.WriteLine(
             "There is {0} red Magic cards",
