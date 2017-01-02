@@ -27,7 +27,7 @@ public class Program
             watch.Start();
 
             PrintColor(sets);
-            PrintReprinted(sets);
+            PrintReprint(sets);
             PrintLegendary(sets);
             PrintRed(sets);
 
@@ -41,8 +41,8 @@ public class Program
             watch.Start();
 
             PrintColorParallel(sets);
-            //PrintReprintParallel(sets);
-            //PrintLegendaryParallel(sets);
+            PrintReprintParallel(sets);
+            PrintLegendaryParallel(sets);
             //PrintRedParallel(sets);
 
             watch.Stop();
@@ -114,9 +114,34 @@ public class Program
         );
     }
 
-    public static void PrintReprinted(List<Model.Set> sets)
+    public static void PrintReprint(List<Model.Set> sets)
     {
         var mostReprinted = sets
+            .SelectMany(set => set.Cards)
+            .Aggregate(
+                new Dictionary<string, int>(),
+                (cardMap, card) =>
+                {
+                    if (cardMap.ContainsKey(card.Name))
+                        cardMap[card.Name] = cardMap[card.Name] + 1;
+                    else
+                        cardMap.Add(card.Name, 0);
+                    return cardMap;
+                }
+            )
+            .OrderByDescending(card => card.Value)
+            .FirstOrDefault();
+
+        Console.WriteLine(
+            "{0} is the most reprinted Magic card with {1} reprints",
+            mostReprinted.Key,
+            mostReprinted.Value
+        );
+    }
+
+    public static void PrintReprintParallel(List<Model.Set> sets)
+    {
+        var mostReprinted = sets.AsParallel()
             .SelectMany(set => set.Cards)
             .Aggregate(
                 new Dictionary<string, int>(),
@@ -142,6 +167,30 @@ public class Program
     public static void PrintLegendary(List<Model.Set> sets)
     {
         var mostLegendarySet = sets.Select(set => new
+            {
+                SetName = set.Name,
+                LegendCount = set.Cards
+                    .Where(card =>
+                        card.SuperTypes != null
+                        && card.SuperTypes
+                            .Contains("Legendary"))
+                    .ToList()
+                    .Count
+            })
+            .OrderByDescending(set => set.LegendCount)
+            .FirstOrDefault();
+
+        Console.WriteLine(
+            "{0} are the most legendary set with {1} legendary cards",
+            mostLegendarySet.SetName,
+            mostLegendarySet.LegendCount
+        );
+    }
+
+    public static void PrintLegendaryParallel(List<Model.Set> sets)
+    {
+        var mostLegendarySet = sets.AsParallel()
+            .Select(set => new
             {
                 SetName = set.Name,
                 LegendCount = set.Cards
