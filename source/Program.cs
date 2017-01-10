@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -32,7 +33,9 @@ public class Program
             PrintLegendary(sets);
             PrintRed(sets);
 
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nElapsed Time running synchronously was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
+            Console.ResetColor();
             watch.Restart();
 
             PrintColorParallel(sets);
@@ -40,7 +43,9 @@ public class Program
             PrintLegendaryParallel(sets);
             PrintRedParallel(sets);
 
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nElapsed Time with PLINQ was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
+            Console.ResetColor();
             watch.Restart();
 
             Task.WaitAll(new Task[] {
@@ -50,7 +55,9 @@ public class Program
                             Task.Run(() => PrintRed(sets))
                         });
 
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nElapsed Time in parallel was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
+            Console.ResetColor();
             watch.Restart();
 
             Task.WaitAll(new Task[] {
@@ -60,12 +67,15 @@ public class Program
                             Task.Run(() => PrintRedParallel(sets))
                         });
 
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nElapsed Time in parallel with PLINQ was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
+            Console.ResetColor();
             watch.Stop();
 
         }).Wait();
     }
 
+    // LINQ
     public static void PrintColor(List<Model.Set> sets)
     {
         var mostPopularColorCombination =
@@ -95,6 +105,7 @@ public class Program
         );
     }
 
+    // PLINQ
     public static void PrintColorParallel(List<Model.Set> sets)
     {
         var mostPopularColorCombination =
@@ -124,6 +135,7 @@ public class Program
         );
     }
 
+    // LINQ
     public static void PrintReprint(List<Model.Set> sets)
     {
         var mostReprinted = sets
@@ -149,6 +161,7 @@ public class Program
         );
     }
 
+    // PLINQ
     public static void PrintReprintParallel(List<Model.Set> sets)
     {
         var mostReprinted = sets.AsParallel()
@@ -174,6 +187,7 @@ public class Program
         );
     }
 
+    // LINQ
     public static void PrintLegendary(List<Model.Set> sets)
     {
         var mostLegendarySet = sets.Select(set => new
@@ -197,6 +211,7 @@ public class Program
         );
     }
 
+    // PLINQ
     public static void PrintLegendaryParallel(List<Model.Set> sets)
     {
         var mostLegendarySet = sets.AsParallel()
@@ -221,6 +236,7 @@ public class Program
         );
     }
 
+    // Synchronous Loop
     public static void PrintRed(List<Model.Set> sets)
     {
         var count = 0;
@@ -249,24 +265,31 @@ public class Program
         );
     }
 
+    // Asynchronous Loop
     public static void PrintRedParallel(List<Model.Set> sets)
     {
         var count = 0;
 
         Parallel.For(0, sets.Count, i =>
         {
-            for (int j = 0; j < sets[i].Cards.Count; j++)
-            {
-                if (sets[i].Cards[j].Colors != null)
-                    for (var k = 0; k < sets[i].Cards[j].Colors.Count; k++)
+            Parallel.ForEach(Partitioner.Create(0, sets[i].Cards.Count),
+                (range) =>
+                {
+                    for (int j = range.Item1; j < range.Item2; j++)
                     {
-                        if (sets[i].Cards[j].Colors[k] == "R")
+                        if (sets[i].Cards[j].Colors != null)
                         {
-                            Interlocked.Increment(ref count);
-                            break;
+                            for (var k = 0; k < sets[i].Cards[j].Colors.Count; k++)
+                            {
+                                if (sets[i].Cards[j].Colors[k] == "R")
+                                {
+                                    Interlocked.Increment(ref count);
+                                    break;
+                                }
+                            }
                         }
                     }
-            }
+                });
         });
 
         Console.WriteLine(
