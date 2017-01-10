@@ -32,7 +32,7 @@ public class Program
             PrintReprint(sets);
             PrintLegendary(sets);
             PrintRed(sets);
-            
+
             PrintResult("\nElapsed Time running synchronously was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             watch.Restart();
 
@@ -40,7 +40,7 @@ public class Program
             PrintReprintParallel(sets);
             PrintLegendaryParallel(sets);
             PrintRedParallel(sets);
-            
+
             PrintResult("\nElapsed Time with PLINQ was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             watch.Restart();
 
@@ -50,7 +50,7 @@ public class Program
                             Task.Run(() => PrintLegendary(sets)),
                             Task.Run(() => PrintRed(sets))
                         });
-            
+
             PrintResult("\nElapsed Time in parallel was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             watch.Restart();
 
@@ -60,7 +60,7 @@ public class Program
                             Task.Run(() => PrintLegendaryParallel(sets)),
                             Task.Run(() => PrintRedParallel(sets))
                         });
-            
+
             PrintResult("\nElapsed Time in parallel with PLINQ was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             watch.Restart();
 
@@ -87,8 +87,7 @@ public class Program
     // LINQ
     public static void PrintColor(List<Model.Set> sets)
     {
-        var mostPopularColorCombination =
-            sets
+        var mostPopularColorCombination = sets
                 .SelectMany(set => set.Cards)
                 .Where(card => card.Colors != null && card.Colors.Count > 1)
                 .Aggregate(
@@ -117,8 +116,7 @@ public class Program
     // PLINQ
     public static void PrintColorParallel(List<Model.Set> sets)
     {
-        var mostPopularColorCombination =
-            sets.AsParallel()
+        var mostPopularColorCombination = sets.AsParallel()
                 .SelectMany(set => set.Cards)
                 .Where(card => card.Colors != null && card.Colors.Count > 1)
                 .Aggregate(
@@ -199,17 +197,18 @@ public class Program
     // LINQ
     public static void PrintLegendary(List<Model.Set> sets)
     {
-        var mostLegendarySet = sets.Select(set => new
-        {
-            SetName = set.Name,
-            LegendCount = set.Cards
+        var mostLegendarySet = sets
+            .Select(set => new
+            {
+                SetName = set.Name,
+                LegendCount = set.Cards
                     .Where(card =>
                         card.SuperTypes != null
                         && card.SuperTypes
                             .Contains("Legendary"))
                     .ToList()
                     .Count
-        })
+            })
             .OrderByDescending(set => set.LegendCount)
             .FirstOrDefault();
 
