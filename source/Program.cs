@@ -32,20 +32,16 @@ public class Program
             PrintReprint(sets);
             PrintLegendary(sets);
             PrintRed(sets);
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\nElapsed Time running synchronously was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
-            Console.ResetColor();
+            
+            PrintResult("\nElapsed Time running synchronously was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             watch.Restart();
 
             PrintColorParallel(sets);
             PrintReprintParallel(sets);
             PrintLegendaryParallel(sets);
             PrintRedParallel(sets);
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\nElapsed Time with PLINQ was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
-            Console.ResetColor();
+            
+            PrintResult("\nElapsed Time with PLINQ was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             watch.Restart();
 
             Task.WaitAll(new Task[] {
@@ -54,10 +50,8 @@ public class Program
                             Task.Run(() => PrintLegendary(sets)),
                             Task.Run(() => PrintRed(sets))
                         });
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\nElapsed Time in parallel was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
-            Console.ResetColor();
+            
+            PrintResult("\nElapsed Time in parallel was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             watch.Restart();
 
             Task.WaitAll(new Task[] {
@@ -66,10 +60,8 @@ public class Program
                             Task.Run(() => PrintLegendaryParallel(sets)),
                             Task.Run(() => PrintRedParallel(sets))
                         });
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\nElapsed Time in parallel with PLINQ was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
-            Console.ResetColor();
+            
+            PrintResult("\nElapsed Time in parallel with PLINQ was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             watch.Restart();
 
             Task.WaitAny(new Task[] {
@@ -78,12 +70,18 @@ public class Program
                             Task.Run(() => PrintLegendary(sets)),
                             Task.Run(() => PrintRed(sets))
                         });
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\nElapsed Time for the shortest task was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
-            Console.ResetColor();
+
+            PrintResult("\nElapsed Time for the shortest task was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             watch.Stop();
 
         }).Wait();
+    }
+
+    private static void PrintResult(string message, double result)
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine(message, result);
+        Console.ResetColor();
     }
 
     // LINQ
