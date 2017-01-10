@@ -70,6 +70,17 @@ public class Program
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("\nElapsed Time in parallel with PLINQ was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
             Console.ResetColor();
+            watch.Restart();
+
+            Task.WaitAny(new Task[] {
+                            Task.Run(() => PrintColor(sets)),
+                            Task.Run(() => PrintReprint(sets)),
+                            Task.Run(() => PrintLegendary(sets)),
+                            Task.Run(() => PrintRed(sets))
+                        });
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\nElapsed Time for the shortest task was \n{0} miliseconds\n", watch.Elapsed.TotalMilliseconds);
+            Console.ResetColor();
             watch.Stop();
 
         }).Wait();
